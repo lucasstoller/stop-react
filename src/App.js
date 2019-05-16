@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Home from './components/pages/Home/Home';
-import Board from './components/pages/Board/Board';
-import FourOhFour from './components/pages/404';
+import Home from './pages/Home/Home';
+import Board from './pages/Board/Board';
+import FourOhFour from './pages/404';
 
 const PAGES = {
   '/': Home,
