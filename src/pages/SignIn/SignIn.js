@@ -1,35 +1,44 @@
-import React from 'react';
-import styled from 'styled-components'
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import { Container, Form, Logo } from "./styles";
+import { ParallaxButton } from "../../components/ParallaxButton"
 
-const Button = styled.button`
-  background: transparent;
-  border-radius: 3px;
-  border: 2px solid palevioletred;
-  color: palevioletred;
-`
-const Input = styled.input`
-  display: block;  
-`
+class SignIn extends Component {
+  state = {
+    user: "",
+    password: "",
+    error: ""
+  };
 
-export default class Signin extends React.Component{
-  constructor(props){
-    super(props);
+  handleSignIn = e => {
+    e.preventDefault();
+    alert("Eu vou te logar");
+  };
 
-    this.state = { }
-  }
-
-  render(){
+  render() {
     return (
-
-      <form>
-        <Input type="email" placeholder="Insira seu email"></Input>
-        <Input type="password" placeholder="Insira sua senha"></Input>
-        <div>
-          <Button>Entrar</Button>
-          <p>ou</p>
-          <a href="/signup">Criar conta</a>
-        </div>
-      </form>
-    )
+      <Container>
+        <Form onSubmit={this.handleSignIn}>
+          {this.state.error && <p>{this.state.error}</p>}
+          <input
+            type="text"
+            placeholder="Usuário"
+            onChange={e => this.setState({ user: e.target.value })}
+          />
+          <input
+            type="password"
+            placeholder="Senha"
+            onChange={e => this.setState({ password: e.target.value })}
+          />
+          <ParallaxButton type="submit" color="#054EE1" bg-color="#2C2E63">Logar</ParallaxButton>
+          {/* <button type="submit">Cadastrar grátis</button> */}
+          <hr />ou
+          <Link to="/signup">Cadastrar-se grátis!</Link>
+        </Form>
+        <Logo></Logo>
+      </Container>
+    );
   }
 }
+
+export default SignIn;
