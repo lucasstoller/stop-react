@@ -1,4 +1,15 @@
 import React from 'react';
+import styled from 'styled-components'
+
+const Button = styled.button`
+  background: transparent;
+  border-radius: 3px;
+  border: 2px solid palevioletred;
+  color: palevioletred;
+`
+const Input = styled.input`
+  display: block;  
+`
 
 export default class Signin extends React.Component{
   constructor(props){
@@ -9,13 +20,16 @@ export default class Signin extends React.Component{
 
   render(){
     return (
-      <div>
-        <h1>Login</h1>
+
+      <form>
+        <Input type="email" placeholder="Insira seu email"></Input>
+        <Input type="password" placeholder="Insira sua senha"></Input>
         <div>
-          OU
-          <a href='/signup'>Sign up</a>
+          <Button>Entrar</Button>
+          <p>ou</p>
+          <a href="/signup">Criar conta</a>
         </div>
-      </div>
+      </form>
     )
   }
 }

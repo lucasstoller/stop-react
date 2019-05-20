@@ -26,7 +26,7 @@ const Routes = () => (
   <BrowserRouter>
     <Switch>
       <Route path="/signin" component={ SignIn } />
-      <Route path="/signup" component={SignUp } />
+      <Route path="/signup" component={ SignUp } />
       <Route exact path="/" component={ Home } />
       <PrivateRoute path="/board" component={ Board } />
       <Route path="*" component={ FourOhFour } />
