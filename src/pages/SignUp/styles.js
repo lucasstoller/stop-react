@@ -1,13 +1,8 @@
 import styled from "styled-components";
-import bgImage from '../../assets/background.png';
 import logoImage from '../../assets/logo_stop.png';
 import formBgImage from '../../assets/login-form-bg.png';
 
 export const Container = styled.div`
-  background-image: url(${bgImage});
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
   display: flex;
   align-items: center;
   justify-content: center;
