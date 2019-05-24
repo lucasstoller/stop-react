@@ -1,7 +1,7 @@
 import React from 'react';
 
 const div_style = {
-	width: '320px', height: '190px', background: '#5D92EC',
+	width: '320px', height: '190', background: '#5D92EC',
 	color: 'white', top: '50%', left:'50%', position: 'absolute',
 	transform: 'translate(-50%, -50%)',
 	padding: '70px 30px'}
