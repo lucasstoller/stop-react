@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { isAuthenticated } from "./services/auth";
 
 import Home from './pages/Home/Home';
+import RoomCreation from './pages/Home/RoomCreation';
 import SignUp from './pages/SignUp/SignUp';
 import SignIn from './pages/SignIn/SignIn';
 import Board from './pages/Board/Board';
@@ -27,6 +28,7 @@ const Routes = () => (
     <Switch>
       <Route path="/signin" component={ SignIn } />
       <Route path="/signup" component={SignUp } />
+      <Route path="/RoomCreation" component={RoomCreation } />
       <Route exact path="/home" component={ Home } />
       <PrivateRoute path="/board" component={ Board } />
       <Route path="*" component={ FourOhFour } />
