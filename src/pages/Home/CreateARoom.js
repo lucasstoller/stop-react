@@ -33,15 +33,24 @@ const close = {
 }
 
 const button_style = {
-	'position': 'absolute',
-	'right':    '0',
-	'bottom':   '0',
+	display: 'block',
+	width: '50px',
+	'margin-top': '5px'
 }
 
-export default class Form extends React.Component {
-	state = {
-		nomeDaSala: "",
-		senha: ""
+export default class CreateARoom extends React.Component {
+	constructor(props){
+    super(props);
+
+    this.state = { 
+			nomeDaSala: "",
+			senha: "",
+			privada: false,
+		}
+  }
+
+	onSubmit(){
+		alert('Comming soon');
 	}
 
 	render() {
@@ -53,7 +62,7 @@ export default class Form extends React.Component {
 
 					<input
 					style = {input}
-					placeholder ='NOME DA SALA' 
+					placeholder = 'NOME DA SALA' 
 					value = {this.state.nomeDaSala}
 					onChange = {e => this.setState({nomeDaSala: e.target.value})} 
 					/>
@@ -66,7 +75,15 @@ export default class Form extends React.Component {
 					onChange = {e => this.setState({senha: e.target.value})} 
 					/>
 
-					<input type="checkbox"></input> <label>Partida Privada</label>
+					<input
+					type = "checkbox"
+					value = {this.state.privada}
+					onChange = {() => this.setState((state, props) => ({
+						privada: !state.privada
+					}))} 
+					/>
+					<label>Partida Privada</label>
+					
 					<button style = {button_style} onClick={() => this.onSubmit()}>Criar</button>
 				</form>
 			</div>

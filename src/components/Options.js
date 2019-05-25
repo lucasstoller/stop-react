@@ -26,13 +26,24 @@ export const NavItem = styled.li`
   }
 `;
 
-function Options(){
+function Options(props){
   return (
     <Nav>
-      <NavItem><FontAwesomeIcon icon={faHandshake} /> MATCHMAKING</NavItem>
-      <NavItem><FontAwesomeIcon icon={faPlusSquare} /> CRIAR SALA</NavItem>
-      <NavItem><FontAwesomeIcon icon={faSearch} /> PROCURAR SALA</NavItem>
-      <NavItem><FontAwesomeIcon icon={faTrophy} /> RANKING</NavItem>
+      <NavItem onClick={() => props.onChangeOption('')}>
+        <FontAwesomeIcon icon={faHandshake} /> MATCHMAKING
+      </NavItem>
+      
+      <NavItem onClick={() => props.onChangeOption('CreateARoom')}>
+        <FontAwesomeIcon icon={faPlusSquare} /> CRIAR SALA
+      </NavItem>
+      
+      <NavItem onClick={() => props.onChangeOption('')}>
+        <FontAwesomeIcon icon={faSearch} /> PROCURAR SALA
+      </NavItem>
+      
+      <NavItem onClick={() => props.onChangeOption('')}>
+        <FontAwesomeIcon icon={faTrophy} /> RANKING
+      </NavItem>
     </Nav>
   );
 }
