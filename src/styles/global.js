@@ -1,4 +1,5 @@
 import { createGlobalStyle } from "styled-components";
+import bgImage from '../assets/background.png';
 
 const GlobalStyle = createGlobalStyle`
 * {
@@ -14,6 +15,10 @@ body, html {
   -webkit-font-smoothing: antialiased !important;
   height: 100%;
   width: 100%;
+  background-image: url(${bgImage});
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 `;
 
