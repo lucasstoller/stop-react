@@ -1,20 +1,14 @@
-import React from 'react';
+import React, {Fragment} from 'react';
+import Menu from '../../components/Menu';
+import Showcase from '../../components/Showcase';
 
-export default class Home extends React.Component{
-  constructor(props){
-    super(props);
-
-    this.state = {
-      title: 'Hello world!'
-    }
-  }
-
-  render(){
-    return (
-      <div>
-        { this.state.title }
-        <a href="/board">Board</a>
-      </div>
-    )
-  }
+function Home(){
+  return (
+    <Fragment>
+      <Menu style="height: 20vh"></Menu>
+      <Showcase style="height: 80vh"></Showcase>
+    </Fragment>
+  )
 }
+
+export default Home;

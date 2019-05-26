@@ -1,6 +1,5 @@
 import { createGlobalStyle } from "styled-components";
 import bgImage from '../assets/background.png';
-
 import "font-awesome/css/font-awesome.css";
 
 const GlobalStyle = createGlobalStyle`
@@ -11,15 +10,16 @@ const GlobalStyle = createGlobalStyle`
   outline: 0;
 }
 body, html {
-  background-image: url(${bgImage});
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
   font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
   text-rendering: optimizeLegibility !important;
   -webkit-font-smoothing: antialiased !important;
   height: 100%;
   width: 100%;
+  background-image: url(${bgImage});
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  list-style: none;
 }
 `;
 
