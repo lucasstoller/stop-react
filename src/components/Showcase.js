@@ -4,6 +4,7 @@ import Options from './Options';
 
 import bgImage from '../assets/home-bg.png';
 import CreateARoom from '../pages/Home/CreateARoom';
+import SearchARoom from '../pages/Home/SearchARoom';
 
 export const Container = styled.div`
   height: 92vh;
@@ -22,7 +23,7 @@ class Showcase extends React.Component {
     super(props);
 
     this.handleChangeOption = this.handleChangeOption.bind(this);
-    this.state = { option: 'CreateARoom' }
+    this.state = { option: 'SearchARoom' }
   }
 
   handleChangeOption(option){
@@ -38,6 +39,13 @@ class Showcase extends React.Component {
         content = (
           <Content>
             <CreateARoom></CreateARoom>
+          </Content>
+        ) 
+        break;
+      case 'SearchARoom':
+        content = (
+          <Content>
+            <SearchARoom></SearchARoom>
           </Content>
         ) 
         break;

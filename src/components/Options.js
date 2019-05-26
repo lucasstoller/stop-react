@@ -37,7 +37,7 @@ function Options(props){
         <FontAwesomeIcon icon={faPlusSquare} /> CRIAR SALA
       </NavItem>
       
-      <NavItem onClick={() => props.onChangeOption('')}>
+      <NavItem onClick={() => props.onChangeOption('SearchARoom')}>
         <FontAwesomeIcon icon={faSearch} /> PROCURAR SALA
       </NavItem>
       
