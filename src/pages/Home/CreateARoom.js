@@ -1,4 +1,9 @@
 import React from 'react';
+import axios from 'axios';
+
+const api = axios.create({
+	baseURL: "http://cbfe40c6.ngrok.io",
+});
 
 const div_style = {
 	width: '320px', height: '190', background: '#5D92EC',
@@ -42,15 +47,26 @@ export default class CreateARoom extends React.Component {
 	constructor(props){
     super(props);
 
-    this.state = { 
-			nomeDaSala: "",
-			senha: "",
-			privada: false,
+    this.state = {
+			name: "",
+			password: "",
+			type: "public",
 		}
   }
 
-	onSubmit(){
-		alert('Comming soon');
+	async onSubmit(e){
+		const path = '/api/rooms';
+
+		const data = {
+			user_id: 1,
+			name: "xabley",
+			password: "123indiozinhos",
+			type: "private"
+		}
+
+		const response = await api.post(path, data);
+		console.log(response);
+		
 	}
 
 	render() {
@@ -63,28 +79,28 @@ export default class CreateARoom extends React.Component {
 					<input
 					style = {input}
 					placeholder = 'NOME DA SALA' 
-					value = {this.state.nomeDaSala}
-					onChange = {e => this.setState({nomeDaSala: e.target.value})} 
+					value = {this.state.name}
+					onChange = {e => this.setState({name: e.target.value})} 
 					/>
 
 					<input
 					style = {input}
 					type = "password"
 					placeholder ='SENHA' 
-					value = {this.state.senha}
-					onChange = {e => this.setState({senha: e.target.value})} 
+					value = {this.state.password}
+					onChange = {e => this.setState({password: e.target.value})} 
 					/>
 
 					<input
 					type = "checkbox"
-					value = {this.state.privada}
+					value = {this.state.type}
 					onChange = {() => this.setState((state, props) => ({
-						privada: !state.privada
+						type: state.type == 'private' ? 'public' : 'private'
 					}))} 
 					/>
 					<label>Partida Privada</label>
 					
-					<button style = {button_style} onClick={() => this.onSubmit()}>Criar</button>
+					<button style = {button_style} type='button' onClick={(e) => this.onSubmit(e)}>Criar</button>
 				</form>
 			</div>
 			);

@@ -38,7 +38,7 @@ class Showcase extends React.Component {
       case 'CreateARoom':
         content = (
           <Content>
-            <CreateARoom></CreateARoom>
+            <CreateARoom user={{user_id: 1}} />
           </Content>
         ) 
         break;
