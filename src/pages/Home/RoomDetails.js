@@ -40,57 +40,24 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-export default class RoomDetails extends React.Component {
-  constructor(props){
-    super(props);
+export default function RoomDetails(props) {
+  const room = props.room;
+  const { players_count, themes, round, type } = room;
+  
+  return (
+    <Container>
+      <RoomTitle>{room.name}</RoomTitle>
+      <RoomDescription>
+        <Item>Jogadores: {players_count}/4</Item>
+        <Item>Temas: {themes.join(', ')}</Item>
+        <Item>Rodada {round}/3</Item>
+        <Item>Privada / Pública: {type == 'private'?'Privada':'Pública'}</Item>
+      </RoomDescription>
+      <Button onClick={() => handleEnterRoom(room.id)}>Entrar</Button>
+    </Container>
+  )
+}
 
-    this.state = {
-      roomPassword: ''
-    }
-  }
-
-  onPasswordChange(new_password){
-    this.setState({roomPassword: new_password})
-  }
-
-  handleEnterRoom(){
-    const { room } = this.props;
-    const { roomPassword } = this.state;
-    
-    if (room.type == 'private' && !roomPassword) {
-      return alert('Esta sala é protegida. Insira a senha para poder entrar.')
-    }
-
-    // Aqui vamos, mandar para o back, e dependendo da reposta
-    // Ou redirecionar o jogador para a tela da sala. Ou mostrar o erro.
-
-    alert('Vamos entrar na sala!');
-  }
-
-  render(){
-    const room = this.props.room;
-    const { players_count, themes, round, type } = room;
-    
-    return (
-      <Container>
-        <RoomTitle>{room.name}</RoomTitle>
-        <RoomDescription>
-          <Item>Jogadores: {players_count}/4</Item>
-          <Item>Temas: {themes.join(', ')}</Item>
-          <Item>Rodada {round}/3</Item>
-          <Item>Privada / Pública: {type == 'private'?'Privada':'Pública'}</Item>
-          { room.type == 'private' && 
-            <Item>
-              Senha: <RoomPassword
-                        type="password" 
-                        placeholder="Digite a senha para poder entrar"
-                        onChange={e => this.onPasswordChange(e.target.value)}
-                      />
-            </Item>
-          }
-        </RoomDescription>
-        <Button onClick={() => this.handleEnterRoom()}>Entrar</Button>
-      </Container>
-    )
-  }
+function handleEnterRoom(id){
+  window.location.pathname = '/room/' + id
 }
