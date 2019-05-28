@@ -30,7 +30,7 @@ const Routes = () => (
       <Route path="/signup" component={ SignUp } />
       <Route exact path="/home" component={ Home } />
       <Route path="/room/:id" component={ Room } />
-      <PrivateRoute path="/board" component={ Board } />
+      <Route path="/board" component={ Board } />
       <Route path="*" component={ FourOhFour } />
     </Switch>
   </BrowserRouter>
