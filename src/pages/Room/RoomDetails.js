@@ -92,7 +92,7 @@ export default function RoomDetails(props) {
           onClick={() => props.onClickQuitRoom()}
           style={{backgroundColor: '#FF0000', borderColor: '#B41919'}}>Sair da sala</Option>
         <Option 
-          onClick={() => props.handleStartGame()}
+          onClick={() => props.onClickStartGame()}
           style={{backgroundColor: '#04EC04', borderColor: '#087E14'}}>Hora do show!</Option>
       </Options>
     </Container>

@@ -3,7 +3,34 @@ import styled from 'styled-components';
 import Menu from '../../components/Menu';
 import RoomAuth from './RoomAuth';
 import RoomDetails from './RoomDetails';
-import Status from './Status';
+import Ws from '@adonisjs/websocket-client'
+
+let ws = null
+
+function startRoomWS () {
+  ws = Ws('ws://localhost:3333').connect()
+
+  ws.on('open', () => {
+    console.log('Conexão aberta!');
+    subscribeToChannel()
+  })
+
+  ws.on('error', () => {
+    console.error('Erro na conexão usando WS.');
+  })
+}
+
+function subscribeToChannel(){
+  const room = ws.subscribe('room');
+
+  room.on('error', () => {
+    console.error('Não foi possível se inscrever no canal.');
+  })
+
+  room.on('matchStarted', () => {
+    alert('Vamos pra partida!')
+  })
+}
 
 const Container = styled.div`
   width: 75vw;
@@ -39,13 +66,14 @@ export default class Room extends React.Component{
     const room = { 
       id: 1, 
       name: 'Amigos do Zeca', 
-      type: 'private', 
+      type: 'public', 
       players_count: 1,
       players: [{username: 'stoller'}], 
       themes: ['Esportes', 'Frutas', 'Carros', 'Pokemon'],
       password: '123456789',
       round: 3
     }
+
     this.setState({
       room, 
       hasAccess: room.type == 'public' ? true : false
@@ -55,36 +83,37 @@ export default class Room extends React.Component{
   handleHadAccess(){
     this.setState({hasAccess: true});
   }
-
-  handleQuitRoom(){
-    // Aqui vamos pegar nos comunicar com a api para desvincular o jogador da sala
+ 
+  async handleQuitRoom(){
+    await ws.close()
     window.location.pathname = '/home'
   }
 
-  // handleStartGame(){
-  // }
+  handleStartGame(){
+    const roomChannel = ws.getSubscription('room')
+    if(roomChannel) roomChannel.emit('startMatch', 'bla')
+    else console.error('Canal não existe');
+  }
 
   render(){
     let content = null;
 
     if(this.state.hasAccess) {
-      content = (
-        <Container>
-          <RoomDetails room={this.state.room} onClickQuitRoom={this.handleQuitRoom} />
-          <Status room={this.state.room} />
-        </Container>
-      )
-    }else{
+      content = <RoomDetails 
+                  room={this.state.room} 
+                  onClickQuitRoom={this.handleQuitRoom}
+                  onClickStartGame={this.handleStartGame} />
+      startRoomWS()
+    } else{
       content = <RoomAuth 
                   password={this.state.room.password} 
-                  onAuthenticated={this.handleHadAccess}
-                />
+                  onAuthenticated={this.handleHadAccess}/>
     }
 
     return (
       <Fragment>
         <Menu style="height: 20vh"></Menu>
-        {content}
+        <Container>{content}</Container>
       </Fragment>
     )
   }
