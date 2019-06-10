@@ -40,24 +40,31 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-export default function RoomDetails(props) {
-  const room = props.room;
-  const { players_count, themes, round, type } = room;
-  
-  return (
-    <Container>
-      <RoomTitle>{room.name}</RoomTitle>
-      <RoomDescription>
-        <Item>Jogadores: {players_count}/4</Item>
-        <Item>Temas: {themes.join(', ')}</Item>
-        <Item>Rodada {round}/3</Item>
-        <Item>Privada / Pública: {type == 'private'?'Privada':'Pública'}</Item>
-      </RoomDescription>
-      <Button onClick={() => handleEnterRoom(room.id)}>Entrar</Button>
-    </Container>
-  )
+class RoomDetails extends React.Component {
+  handleEnterRoom(id){
+    window.location.pathname = '/room/' + id
+  }
+
+  render(){
+    const room = this.props.room;
+    let content
+    
+    if(room){
+      const { themes, type } = room;
+      content = (
+        <Container>
+          <RoomTitle>{room.name}</RoomTitle>
+          <RoomDescription>
+            <Item>Temas: {['Esportes', 'Carros', 'Frutas', 'Pokemon'].join(', ')}</Item>
+            <Item>Privada / Pública: {type == 'private'?'Privada':'Pública'}</Item>
+          </RoomDescription>
+          <Button onClick={() => this.handleEnterRoom(room.id)}>Entrar</Button>
+        </Container>
+      )
+    } else content = <Container />
+    
+    return content
+  }
 }
 
-function handleEnterRoom(id){
-  window.location.pathname = '/room/' + id
-}
+export default RoomDetails;
