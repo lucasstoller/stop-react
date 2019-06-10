@@ -7,31 +7,6 @@ import Ws from '@adonisjs/websocket-client'
 
 let ws = null
 
-function startRoomWS () {
-  ws = Ws('ws://localhost:3333').connect()
-
-  ws.on('open', () => {
-    console.log('Conexão aberta!');
-    subscribeToChannel()
-  })
-
-  ws.on('error', () => {
-    console.error('Erro na conexão usando WS.');
-  })
-}
-
-function subscribeToChannel(){
-  const room = ws.subscribe('room');
-
-  room.on('error', () => {
-    console.error('Não foi possível se inscrever no canal.');
-  })
-
-  room.on('matchStarted', () => {
-    alert('Vamos pra partida!')
-  })
-}
-
 const Container = styled.div`
   width: 75vw;
   height: 80vh;
@@ -95,6 +70,32 @@ export default class Room extends React.Component{
     else console.error('Canal não existe');
   }
 
+  startRoomWS () {
+    ws = Ws('ws://localhost:3333').connect()
+  
+    ws.on('open', () => {
+      console.log('Conexão aberta!');
+      this.subscribeToChannel()
+    })
+  
+    ws.on('error', () => {
+      console.error('Erro na conexão usando WS.');
+    })
+  }
+
+  subscribeToChannel(){
+    const room = ws.subscribe('room');
+  
+    room.on('error', () => {
+      console.error('Não foi possível se inscrever no canal.');
+    })
+  
+    room.on('matchStarted', () => {
+      alert('Vamos começar a partida!');
+      window.location = `/partida.html?partidaId=${this.state.roomId}&usuario=User`
+    })
+  }
+
   render(){
     let content = null;
 
@@ -103,7 +104,7 @@ export default class Room extends React.Component{
                   room={this.state.room} 
                   onClickQuitRoom={this.handleQuitRoom}
                   onClickStartGame={this.handleStartGame} />
-      startRoomWS()
+      this.startRoomWS()
     } else{
       content = <RoomAuth 
                   password={this.state.room.password} 
