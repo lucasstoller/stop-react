@@ -21,7 +21,7 @@ class Home extends React.Component{
     return (
       <Fragment>
         <Menu style="height: 20vh"></Menu>
-        <Showcase style="height: 80vh"></Showcase>
+        <Showcase style="height: 80vh" user={ this.state.user }></Showcase>
       </Fragment>
     )
   }

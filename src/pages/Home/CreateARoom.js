@@ -1,9 +1,5 @@
 import React from 'react';
-import axios from 'axios';
-
-const api = axios.create({
-	baseURL: "http://cbfe40c6.ngrok.io",
-});
+import api from '../../services/api'
 
 const div_style = {
 	width: '320px', height: '190', background: '#5D92EC',
@@ -54,19 +50,19 @@ export default class CreateARoom extends React.Component {
 		}
   }
 
-	async onSubmit(e){
-		const path = '/api/rooms';
-
+	async handleSubmit(e){
+		const { name, password, type } = this.state
 		const data = {
-			user_id: 1,
-			name: "xabley",
-			password: "123indiozinhos",
-			type: "private"
+			user_id: this.props.user.id,
+			name,
+			password,
+			type,
+			themes: ['Esportes', 'Frutas', 'Carros', 'Pokemon']
 		}
 
-		const response = await api.post(path, data);
+		const response = await api.post('/rooms', data);
 		console.log(response);
-		
+			
 	}
 
 	render() {
@@ -100,7 +96,7 @@ export default class CreateARoom extends React.Component {
 					/>
 					<label>Partida Privada</label>
 					
-					<button style = {button_style} type='button' onClick={(e) => this.onSubmit(e)}>Criar</button>
+					<button style = {button_style} type='button' onClick={(e) => this.handleSubmit(e)}>Criar</button>
 				</form>
 			</div>
 			);

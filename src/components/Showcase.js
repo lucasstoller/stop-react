@@ -22,8 +22,8 @@ class Showcase extends React.Component {
   constructor(props){
     super(props);
 
-    this.handleChangeOption = this.handleChangeOption.bind(this);
     this.state = { option: 'SearchARoom' }
+    this.handleChangeOption = this.handleChangeOption.bind(this);
   }
 
   handleChangeOption(option){
@@ -38,7 +38,7 @@ class Showcase extends React.Component {
       case 'CreateARoom':
         content = (
           <Content>
-            <CreateARoom user={{user_id: 1}} />
+            <CreateARoom user={this.props.user} />
           </Content>
         ) 
         break;
