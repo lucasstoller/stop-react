@@ -51,7 +51,6 @@ export const Option = styled.li`
 
 export default function RoomDetails(props) {
   const room = props.room;
-  const { players_count, themes, players, round } = room;
   
   const listStyle = {
     'display': 'flex',
@@ -63,16 +62,13 @@ export default function RoomDetails(props) {
 
   const themeList = (
     <ul style={listStyle}>
-      {themes.map(theme => (
+      {['Esportes', 'Carros', 'Frutas', 'Pokemon'].map(theme => (
         <li>{ theme }</li>
       ))}   
     </ul>
   )
   const playersList = (
     <ul style={listStyle}>
-      {players.map(player => (
-        <li>{ player.username }</li>
-      ))}   
     </ul>
   )
 
@@ -80,7 +76,7 @@ export default function RoomDetails(props) {
     <Container>
       <Title>{room.name}</Title>
       <Info>
-        <Subtitle>Online {players_count}/4</Subtitle>
+        <Subtitle>Online</Subtitle>
         { playersList }
       </Info>
       <Info>

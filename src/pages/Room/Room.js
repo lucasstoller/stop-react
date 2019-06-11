@@ -3,7 +3,10 @@ import styled from 'styled-components';
 import Menu from '../../components/Menu';
 import RoomAuth from './RoomAuth';
 import RoomDetails from './RoomDetails';
-import Ws from '@adonisjs/websocket-client'
+import Ws from '@adonisjs/websocket-client';
+import api from '../../services/api';
+import { getToken } from '../../services/auth';
+import jwt_decode from 'jwt-decode';
 
 let ws = null
 
@@ -32,26 +35,22 @@ export default class Room extends React.Component{
     }
 
     this.handleHadAccess = this.handleHadAccess.bind(this);
+    this.handleStartGame = this.handleStartGame.bind(this);
   }
   
-  componentWillMount(){
-    // Aqui vamos pegar nos comunicar coma api para obter o objeto sala 
-    // Por enquanto vamos usar um fake
+  async componentWillMount(){
+    const token = getToken()
+    const { uid } = jwt_decode(token);
+    let response = await api.get(`/users/${uid}`);
+    const user = response.data
 
-    const room = { 
-      id: 1, 
-      name: 'Amigos do Zeca', 
-      type: 'public', 
-      players_count: 1,
-      players: [{username: 'stoller'}], 
-      themes: ['Esportes', 'Frutas', 'Carros', 'Pokemon'],
-      password: '123456789',
-      round: 3
-    }
+    response = await api.get(`/rooms/${this.state.roomId}`)
+    const room = response.data
 
     this.setState({
       room, 
-      hasAccess: room.type == 'public' ? true : false
+      hasAccess: room.type == 'public' ? true : false,
+      user
     });
   }
 
@@ -65,9 +64,9 @@ export default class Room extends React.Component{
   }
 
   handleStartGame(){
-    const roomChannel = ws.getSubscription('room')
+    const roomChannel = ws.getSubscription(`room:${this.state.roomId}`)
     if(roomChannel) roomChannel.emit('startMatch', 'bla')
-    else console.error('Canal não existe');
+    else console.error('Canal não existe'); 
   }
 
   startRoomWS () {
@@ -84,15 +83,20 @@ export default class Room extends React.Component{
   }
 
   subscribeToChannel(){
-    const room = ws.subscribe('room');
-  
+    const room = ws.getSubscription(`room:${this.state.roomId}`) || ws.subscribe(`room:${this.state.roomId}`)
+    room.emit('hello', this.state.user.username)
+    
     room.on('error', () => {
       console.error('Não foi possível se inscrever no canal.');
     })
   
     room.on('matchStarted', () => {
       alert('Vamos começar a partida!');
-      window.location = `/partida.html?partidaId=${this.state.roomId}&usuario=User`
+      window.location = `/partida.html?partidaId=${this.state.roomId}&usuario=${this.state.user.username}`
+    })
+
+    room.on('newMemberEntered', username => {
+      console.log(username, ' entrou na sala');
     })
   }
 
