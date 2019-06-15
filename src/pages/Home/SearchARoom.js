@@ -5,16 +5,16 @@ import RoomDetails from './RoomDetails';
 import api from '../../services/api';
 
 const divStyle = {
-	'width': '75%',
-	'height': '60%',
-	'background': 'rgba(135, 145, 164, 0)',
-	'color': 'white',
-	'top': '50%', 'left':'50%',
-	'position': 'absolute',
-	'transform': 'translate(-50%, -50%)',
-	'padding': '10px',
-	'border-radius': '5px',
-	'display': 'flex',
+	width: '75%',
+	height: '60%',
+	background: 'rgba(135, 145, 164, 0)',
+	color: 'white',
+	top: '50%', 'left':'50%',
+	position: 'absolute',
+	transform: 'translate(-50%, -50%)',
+	padding: '10px',
+	borderRadius: '5px',
+	display: 'flex'
 }
 
 export default class SearchARoom extends React.Component {
