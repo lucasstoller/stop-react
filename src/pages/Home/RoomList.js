@@ -48,12 +48,12 @@ export default function RoomList(props) {
       <p><FontAwesomeIcon icon={faUnlock} /> Público</p> : 
       <p><FontAwesomeIcon icon={faLock} /> Privado</p>
     return (
-      <Room onClick={() => props.onRoomClick(room.id)}>
+      <Room key={`room-${room.id}`} onClick={() => props.onRoomClick(room.id)}>
         <RoomTitle>{room.name}</RoomTitle>
         <hr/>
         <RoomDescription>
           { type }
-          <p><FontAwesomeIcon icon={faUser} /> {room.players_count} / 4</p>
+          <p><FontAwesomeIcon icon={faUser} /> {room.users.length} jogadores</p>
         </RoomDescription>
       </Room>
     )

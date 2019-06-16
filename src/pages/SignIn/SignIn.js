@@ -1,18 +1,36 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
+
+import api from "../../services/api";
+import { login } from "../../services/auth";
+
 import { Container, Form, Logo } from "./styles";
 import { ParallaxButton } from "../../components/ParallaxButton"
 
 class SignIn extends Component {
   state = {
-    user: "",
+    email: "",
     password: "",
     error: ""
   };
 
-  handleSignIn = e => {
+  handleSignIn = async e => {
     e.preventDefault();
-    alert("Eu vou te logar");
+    const { email, password } = this.state;
+    if (!email || !password) {
+      this.setState({ error: "Preencha e-mail e senha para continuar!" });
+    } else {
+      try {
+        const response = await api.post("/sessions", { email, password });
+        login(response.data.token);
+        this.props.history.push("/home");
+      } catch (err) {
+        this.setState({
+          error:
+            "Houve um problema com o login, verifique suas credenciais. T.T"
+        });
+      }
+    }
   };
 
   render() {
@@ -21,9 +39,9 @@ class SignIn extends Component {
         <Form onSubmit={this.handleSignIn}>
           {this.state.error && <p>{this.state.error}</p>}
           <input
-            type="text"
-            placeholder="Usuário"
-            onChange={e => this.setState({ user: e.target.value })}
+            email="text"
+            placeholder="E-mail"
+            onChange={e => this.setState({ email: e.target.value })}
           />
           <input
             type="password"
@@ -31,7 +49,6 @@ class SignIn extends Component {
             onChange={e => this.setState({ password: e.target.value })}
           />
           <ParallaxButton type="submit" color="#054EE1" bg-color="#2C2E63">Logar</ParallaxButton>
-          {/* <button type="submit">Cadastrar grátis</button> */}
           <hr />ou
           <Link to="/signup">Cadastrar-se grátis!</Link>
         </Form>
@@ -41,4 +58,4 @@ class SignIn extends Component {
   }
 }
 
-export default SignIn;
+export default withRouter(SignIn);

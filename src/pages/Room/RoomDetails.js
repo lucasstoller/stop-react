@@ -51,28 +51,29 @@ export const Option = styled.li`
 
 export default function RoomDetails(props) {
   const room = props.room;
-  const { players_count, themes, players, round } = room;
+  const {themes, users} = room
+  console.log(themes);
   
   const listStyle = {
-    'display': 'flex',
-    'flex-direction': 'row',
-    'justify-content': 'space-around',
-    'flex-wrap': 'wrap',
-    'padding': '1vw'
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    flexWrap: 'wrap',
+    padding: '1vw'
   }
 
   const themeList = (
     <ul style={listStyle}>
-      {themes.map(theme => (
-        <li>{ theme }</li>
+      {themes.map((theme, index) => (
+        <li key={`room-${room.id}-player-${index}`}>{ theme }</li>
       ))}   
     </ul>
   )
   const playersList = (
     <ul style={listStyle}>
-      {players.map(player => (
-        <li>{ player.username }</li>
-      ))}   
+      {users.map((player, index) => (
+        <li key={`room-${room.id}-theme-${index}`}>{ player }</li>
+      ))}
     </ul>
   )
 
@@ -80,11 +81,11 @@ export default function RoomDetails(props) {
     <Container>
       <Title>{room.name}</Title>
       <Info>
-        <Subtitle>Online {players_count}/4</Subtitle>
+        <Subtitle>Online</Subtitle>
         { playersList }
       </Info>
       <Info>
-        <Subtitle>Temas</Subtitle>
+        <Subtitle>Temas</Subtitle>}
         { themeList }
       </Info>
       <Options>
@@ -92,7 +93,7 @@ export default function RoomDetails(props) {
           onClick={() => props.onClickQuitRoom()}
           style={{backgroundColor: '#FF0000', borderColor: '#B41919'}}>Sair da sala</Option>
         <Option 
-          onClick={() => props.handleStartGame()}
+          onClick={() => props.onClickStartGame()}
           style={{backgroundColor: '#04EC04', borderColor: '#087E14'}}>Hora do show!</Option>
       </Options>
     </Container>

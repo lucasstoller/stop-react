@@ -1,46 +1,45 @@
 import React from 'react';
-import axios from 'axios';
-
-const api = axios.create({
-	baseURL: "http://cbfe40c6.ngrok.io",
-});
+import api from '../../services/api'
 
 const div_style = {
-	width: '320px', height: '190', background: '#5D92EC',
+	width: '320px', height: '190', 
+	background: '#5D92EC',
 	color: 'white', top: '50%', left:'50%', position: 'absolute',
 	transform: 'translate(-50%, -50%)',
 	padding: '70px 30px'}
 
 const h1_style = {
-	margin: '0', padding: '0 0 20px',
-	'text-align': 'center', 'font-size': '22px'
+	margin: '0', 
+	padding: '0 0 20px',
+	textAlign: 'center', 
+	fontSize: '22px'
 }
 
 const input = {
 	width: '100%',
-	'margin-bottom': '20px',
+	marginBottom: '20px',
 	border: 'none',
-	'border-bottom': '1px solid #fff',
+	borderBottom: '1px solid #fff',
 	height: '20px',
-	'border-style': 'solid',
-	'border-width': '1px'
+	borderStyle: 'solid',
+	borderWidth: '1px'
 }
 
 const close = {
-	'color': 'white',
-  	'font': '14px/100% arial, sans-serif',
-  	'position': 'absolute',
-  	'right': '5px',
-  	'text-decoration': 'none',
-  	'text-shadow': '0 1px 0 #fff',
-  	'top': '5px',
-  	'content': '✖'
+	color: 'white',
+  font: '14px/100% arial, sans-serif',
+  position: 'absolute',
+  right: '5px',
+  textDecoration: 'none',
+  textShadow: '0 1px 0 #fff',
+  top: '5px',
+  content: '✖'
 }
 
 const button_style = {
 	display: 'block',
 	width: '50px',
-	'margin-top': '5px'
+	marginTop: '5px'
 }
 
 export default class CreateARoom extends React.Component {
@@ -54,19 +53,19 @@ export default class CreateARoom extends React.Component {
 		}
   }
 
-	async onSubmit(e){
-		const path = '/api/rooms';
-
+	async handleSubmit(e){
+		const { name, password, type } = this.state
 		const data = {
-			user_id: 1,
-			name: "xabley",
-			password: "123indiozinhos",
-			type: "private"
+			user_id: this.props.user.id,
+			name,
+			password,
+			type,
+			themes: ['Esportes', 'Frutas', 'Carros', 'Pokemon']
 		}
 
-		const response = await api.post(path, data);
+		const response = await api.post('/rooms', data);
 		console.log(response);
-		
+			
 	}
 
 	render() {
@@ -100,7 +99,7 @@ export default class CreateARoom extends React.Component {
 					/>
 					<label>Partida Privada</label>
 					
-					<button style = {button_style} type='button' onClick={(e) => this.onSubmit(e)}>Criar</button>
+					<button style = {button_style} type='button' onClick={(e) => this.handleSubmit(e)}>Criar</button>
 				</form>
 			</div>
 			);
