@@ -1,13 +1,15 @@
 import React from "react";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 
 import { isAuthenticated } from "./services/auth";
 
 import Home from './pages/Home/Home';
+import Room from './pages/Room/Room';
 import SignUp from './pages/SignUp/SignUp';
 import SignIn from './pages/SignIn/SignIn';
 import Board from './pages/Board/Board';
 import FourOhFour from './pages/404';
+
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
@@ -23,18 +25,16 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
 );
 
 const Routes = () => (
-  <BrowserRouter>
-    <Switch>
-      <Route path="/signin" component={ SignIn } />
-      <Route path="/signup" component={ SignUp } />
-       
-      <PrivateRoute Route exact path="/" component={ Home } />
-      <PrivateRoute Route exact path="/home" component={ Home } />
-      <PrivateRoute path="/room/:id/board" component={ Board } />
-      
-      <Route path="*" component={ FourOhFour } />
-    </Switch>
-  </BrowserRouter>
+  <Router>
+      <Switch>
+        <PrivateRoute exact path="/home" component={ Home } />
+        <PrivateRoute exact path="/room/:id" component={ Room } />      
+        <PrivateRoute path="/rooms/:id/board" component={ Board } />      
+        <Route path="/signin" component={ SignIn } />
+        <Route path="/signup" component={ SignUp } />
+        <Route path="*" component={ FourOhFour } />
+      </Switch>
+  </Router>
 );
 
 export default Routes;
