@@ -1,12 +1,40 @@
 import React from 'react';
-import api from '../../services/api'
+import api from '../../services/api';
+import Select from 'react-select';
+import Alert from 'react-s-alert';
+import 'react-s-alert/dist/s-alert-default.css';
+import 'react-s-alert/dist/s-alert-css-effects/slide.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+import 'react-s-alert/dist/s-alert-css-effects/slide.css';
+import 'react-s-alert/dist/s-alert-css-effects/scale.css';
+import 'react-s-alert/dist/s-alert-css-effects/bouncyflip.css';
+import 'react-s-alert/dist/s-alert-css-effects/flip.css';
+import 'react-s-alert/dist/s-alert-css-effects/genie.css';
+import 'react-s-alert/dist/s-alert-css-effects/jelly.css';
+import 'react-s-alert/dist/s-alert-css-effects/stackslide.css';
+
+
+import { deepEqual } from 'assert';
 
 const div_style = {
-	width: '320px', height: '190', 
+	width: '320px', height: '220',	
 	background: '#5D92EC',
 	color: 'white', top: '50%', left:'50%', position: 'absolute',
 	transform: 'translate(-50%, -50%)',
-	padding: '70px 30px'}
+	padding: '70px 30px',
+	borderRadius: '10px'
+}
+
+const modal_error = {
+	width: '320px', height: '220',	
+	background: '#DC143C',
+	color: 'white', top: '50%', left:'50%', position: 'absolute',
+	transform: 'translate(-50%, -50%)',
+	padding: '70px 30px',
+	borderRadius: '10px'
+}
 
 const h1_style = {
 	margin: '0', 
@@ -19,14 +47,15 @@ const input = {
 	width: '100%',
 	marginBottom: '20px',
 	border: 'none',
+	borderRadius: '3px',
 	borderBottom: '1px solid #fff',
-	height: '20px',
+	height: '35px',
 	borderStyle: 'solid',
 	borderWidth: '1px'
 }
 
 const close = {
-	color: 'white',
+  color: 'white',
   font: '14px/100% arial, sans-serif',
   position: 'absolute',
   right: '5px',
@@ -38,9 +67,31 @@ const close = {
 
 const button_style = {
 	display: 'block',
-	width: '50px',
-	marginTop: '5px'
+	width: '55px',
+	height: '35px',
+	marginTop: '1em',
+	borderRadius: '5px',
+	fontWeight: '500',
+	boxShadow: '0 0.5rem 1.1rem 0 rgba(22,75,195,0.50)'
+}	
+
+const modal_style = {
+	position: 'top-left',
+	effect: 'scale',
+	beef: false,
+	timeout: 2500,
+	offset: -1
 }
+
+
+const selectBox_style = {
+	option: (provided, state) => ({
+		...provided,
+		color: 'black',
+		padding: 10,		
+	}),
+}
+
 
 export default class CreateARoom extends React.Component {
 	constructor(props){
@@ -49,59 +100,120 @@ export default class CreateARoom extends React.Component {
     this.state = {
 			name: "",
 			password: "",
-			type: "public",
+			type: "public",			
+			options: [],
+			values: [],
+			passwordBool: true,
+			errorMessage: "Ocorreu um erro ao tentar processar",
+			warningMessage: "Há inconsistências! Verifique os dados e tente novamente",
+			successMessage: "Sala criada com sucesso!"
 		}
   }
 
+  	componentWillMount = async() => {
+		const {data} = await api.get('/room/themes');
+		this.setState({options: data})
+	}
+
+	resetValues = () => {
+		this.setState({name: '', password: '', values: '', type: "public" })
+		this.refs.check.checked = false;
+	}
+
 	async handleSubmit(e){
-		const { name, password, type } = this.state
+
+		const { name, password, type, values } = this.state
+		
+		if (name == "" || (password == "" && type == "private") || values.length < 4 ){
+			e.preventDefault();
+			Alert.warning(this.state.warningMessage, {position: 'top-left', effect: 'scale', beef: false, timeout: 2500, offset: -1});
+			return;
+		}
+		
+		const themes_2_send = values.map(x => {
+			return x.label
+		})
+
 		const data = {
 			user_id: this.props.user.id,
 			name,
 			password,
 			type,
-			themes: ['Esportes', 'Frutas', 'Carros', 'Pokemon']
+			themes: themes_2_send
 		}
 
 		const response = await api.post('/rooms', data);
-		console.log(response);
-			
+		
+		if(response.status == 200){			
+			this.resetValues();
+			Alert.success(this.state.successMessage, {position: 'top-left', effect: 'scale', beef: false, timeout: 2500, offset: -1});
+		}
+		else
+			Alert.error(this.state.errorMessage, {position: 'top-left', effect: 'scale', beef: false, timeout: 2500, offset: -1});
 	}
 
 	render() {
-		return (
-			<div style = {div_style}>
-				<form>
-				<a href = "#" style = {close}>X</a>
-				<h1 style = {h1_style}>Criar Sala</h1>
+	
+		const { options } = this.state;
 
-					<input
-					style = {input}
-					placeholder = 'NOME DA SALA' 
-					value = {this.state.name}
-					onChange = {e => this.setState({name: e.target.value})} 
-					/>
+		const selectbox = (options) => options.map(({ id, name }) => {
+			return { label: name, value: id }
+	  	})
 
-					<input
-					style = {input}
-					type = "password"
-					placeholder ='SENHA' 
-					value = {this.state.password}
-					onChange = {e => this.setState({password: e.target.value})} 
-					/>
+        return (
+			<div>
+				<div>				
+					<Alert stack={{limit: 1}} />
+				</div>
 
-					<input
-					type = "checkbox"
-					value = {this.state.type}
-					onChange = {() => this.setState((state, props) => ({
-						type: state.type == 'private' ? 'public' : 'private'
-					}))} 
-					/>
-					<label>Partida Privada</label>
-					
-					<button style = {button_style} type='button' onClick={(e) => this.handleSubmit(e)}>Criar</button>
-				</form>
+				<div style = {div_style}>
+					<form>
+					<a href = "#" style = {close}>X</a>
+					<h1 style = {h1_style}>Criar Sala</h1>
+						<input
+						style = {input}					
+						placeholder = 'Nome da Sala' 
+						value = {this.state.name}
+						onChange = {e => this.setState({name: e.target.value})} 
+						/>
+
+						<input
+						style = {input}
+						type = "password"
+						placeholder ='Senha'
+						disabled = {this.state.passwordBool}
+						value = {this.state.password}
+						onChange = {e => this.setState({password: e.target.value})} 
+						/>
+						
+						<Select
+						value={this.state.values}
+						styles={selectBox_style}
+						options={this.state.values.length >= 4 ?
+								this.state.values : selectbox (options)}
+						onChange={values => this.setState({ values })}
+						isMulti
+						placeholder="Selecione os temas..."
+						/>	
+
+						<input
+						type = "checkbox"
+						ref = "check"
+						style = {{marginTop: '15px'}}					
+						value = {this.state.type}
+						onChange = {() => this.setState((state, props) => ({
+							type: state.type == 'private' ? 'public' : 'private',
+							passwordBool: !this.state.passwordBool,
+							password: state.password == ""? state.password : ""
+						}))} 
+						/>
+						<label>Partida Privada</label>
+						
+						<button style={button_style} onClick={(e) => this.handleSubmit(e)}>Criar</button>					
+						
+					</form>			
+				</div>
 			</div>
-			);
+		);
 	};
 }
