@@ -1,7 +1,10 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import { getToken } from '../../services/auth';
+import jwt_decode from 'jwt-decode';
 import RoomAuth from './RoomAuth';
 import RoomDetails from './RoomDetails';
+import Loading from '../../components/Loading';
 import Ws from '@adonisjs/websocket-client';
 import api from '../../services/api';
 
@@ -22,12 +25,15 @@ const Container = styled.div`
 `;
 
 export default class Room extends React.Component{
-  constructor({ props }){
+  constructor({ props, match }){
     super(props)
-
+    
     this.state = {
+      id: match.params.id,
+      user: null,
       room: null,
-      hasAccess: null
+      hasAccess: null, 
+      isLoading: true,
     }
 
     this.handleAuth = this.handleAuth.bind(this);
@@ -36,13 +42,21 @@ export default class Room extends React.Component{
     this.handleStartGame = this.handleStartGame.bind(this);
   }
   
-  async componentWillMount(){
-    const { room } = this.props
+  async componentDidMount() {
+    window.addEventListener("beforeunload", this.onUnload)
+
+    const token = getToken()
+    const { uid } = jwt_decode(token)
+    const { data: user } = await api.get(`/users/${uid}`)
+    const { data: room } = await api.get(`/rooms/${this.state.id}`)
     const hasAccess = room.type == 'public' ? true : false
     
-    await this.setState({ room, hasAccess })
-    
-    if(this.state.hasAccess) this.handleEnterRoom()
+    await this.setState({ user, room, hasAccess, isLoading: false })
+    if(hasAccess) this.handleEnterRoom()
+  }
+
+  onUnload = e => {
+    this.handleQuitRoom()
   }
   
   handleAuth() {
@@ -51,24 +65,23 @@ export default class Room extends React.Component{
   }
 
   async handleEnterRoom(){
-    const { user: {id: user_id} } = this.props    
-    const { room: {id: room_id} } = this.state
+    const { user: {id: user_id}, room: {id: room_id} } = this.state   
+
     try {
-      const response = await api.post(`/users/${user_id}/rooms/${room_id}`)
+      await api.post(`/users/${user_id}/rooms/${room_id}`)
       this.startRoomWS()
     } catch (error) {
       console.error(error)
+      
       alert('Infelizmente não foi possível entrar na sala. Tente novamente em instantes.')
-      window.location.pathname = '/home' 
+      this.props.history.pop()
     }
   }
 
   async handleQuitRoom(){
-    const { user: {id: user_id} } = this.props    
-    const { room: {id: room_id} } = this.state
+    const { user: {id: user_id}, room: {id: room_id} } = this.state    
 
     const response = await api.delete(`/users/${user_id}/rooms/${room_id}`)
-    console.log(response);
     
     if (response.status == 200) {
       ws.close()
@@ -97,8 +110,7 @@ export default class Room extends React.Component{
   }
 
   subscribeToChannel(){
-    const { room } = this.state
-    const { user } = this.props
+    const { room, user } = this.state
     const payload = {
       username: user.username,
       room: room.id
@@ -112,34 +124,63 @@ export default class Room extends React.Component{
   
     roomSubscription.on('matchStarted', () => {
       alert('Vamos começar a partida!');
-      window.location = `/partida.html?partidaId=${room.id}&usuario=${user.username}`
+      this.props.history.push(`/room/${this.state.room.id}/board`)
     })
 
-    roomSubscription.on('newMemberEntered', username => {
-      console.log(username, ' entrou na sala');
+    roomSubscription.on('newMemberEntered', user => {
+      this.setState(state => {
+        return {
+          room: {
+            users: state.room.users.push(user), 
+            ...state.room
+          }
+        }
+      })
+      console.log(`${user} entrou na sala`);
+    })
+
+    roomSubscription.on('memberExited', payload => {
+      console.log(payload);
+      
+      this.setState(state => {
+        return {
+          room: {
+            ...state.room,
+            users: state.room.users.filter(user => user != payload.username)
+          }
+        }
+      })
+      console.log(`${payload.username} saiu da sala`);
     })
 
     roomSubscription.on('close', () => {
-      window.location.pathname = '/home'
+      this.props.history.push('/home')
     })
   }
 
   render(){
-    let content
+    const { room, hasAccess, isLoading } = this.state
     
-    if(this.state.hasAccess) {
+    let content
+
+    if (isLoading) {
+      content = <Loading message='Carregando sala...' background='rgba(0, 0, 0, 0.7)'/>
+    }
+    else if(hasAccess) {
       content = <RoomDetails
-                  room={this.state.room} 
-                  onClickQuitRoom={this.handleQuitRoom}
-                  onClickStartGame={this.handleStartGame} />
+                  room={room} 
+                  onClickQuitRoom={() => this.handleQuitRoom()}
+                  onClickStartGame={() => this.handleStartGame()} />
     } else {
       content = <RoomAuth 
-                  password={this.state.room.password} 
-                  onAuthenticated={this.handleAuth}/>
+                  password={room.password} 
+                  onAuthenticated={() => this.handleAuth()}/>
     }
 
     return (
-      <Container>{content}</Container>
+      <Container>
+        { content }
+      </Container>
     )
   }
 }
