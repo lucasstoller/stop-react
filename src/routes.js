@@ -7,7 +7,6 @@ import Home from './pages/Home/Home';
 import SignUp from './pages/SignUp/SignUp';
 import SignIn from './pages/SignIn/SignIn';
 import Board from './pages/Board/Board';
-import Room from './pages/Room/Room';
 import FourOhFour from './pages/404';
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
@@ -28,7 +27,7 @@ const Routes = () => (
     <Switch>
       <Route path="/signin" component={ SignIn } />
       <Route path="/signup" component={ SignUp } />
-      
+       
       <PrivateRoute Route exact path="/" component={ Home } />
       <PrivateRoute Route exact path="/home" component={ Home } />
       <PrivateRoute path="/room/:id/board" component={ Board } />

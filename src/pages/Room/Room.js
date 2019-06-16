@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import RoomAuth from './RoomAuth';
 import RoomDetails from './RoomDetails';
@@ -35,7 +35,7 @@ export default class Room extends React.Component{
     this.handleQuitRoom = this.handleQuitRoom.bind(this);
     this.handleStartGame = this.handleStartGame.bind(this);
   }
-  
+
   async componentWillMount(){
     const { room } = this.props
     const hasAccess = room.type == 'public' ? true : false
@@ -43,6 +43,14 @@ export default class Room extends React.Component{
     await this.setState({ room, hasAccess })
     
     if(this.state.hasAccess) this.handleEnterRoom()
+  }
+  
+  componentDidMount() {
+    window.addEventListener("beforeunload", this.onUnload);
+  }
+
+  onUnload = e => {
+    this.handleQuitRoom()
   }
   
   handleAuth() {
@@ -54,7 +62,7 @@ export default class Room extends React.Component{
     const { user: {id: user_id} } = this.props    
     const { room: {id: room_id} } = this.state
     try {
-      const response = await api.post(`/users/${user_id}/rooms/${room_id}`)
+      await api.post(`/users/${user_id}/rooms/${room_id}`)
       this.startRoomWS()
     } catch (error) {
       console.error(error)
@@ -68,7 +76,6 @@ export default class Room extends React.Component{
     const { room: {id: room_id} } = this.state
 
     const response = await api.delete(`/users/${user_id}/rooms/${room_id}`)
-    console.log(response);
     
     if (response.status == 200) {
       ws.close()
@@ -115,8 +122,30 @@ export default class Room extends React.Component{
       window.location = `/partida.html?partidaId=${room.id}&usuario=${user.username}`
     })
 
-    roomSubscription.on('newMemberEntered', username => {
-      console.log(username, ' entrou na sala');
+    roomSubscription.on('newMemberEntered', user => {
+      this.setState(state => {
+        return {
+          room: {
+            users: state.room.users.push(user), 
+            ...state.room
+          }
+        }
+      })
+      console.log(`${user} entrou na sala`);
+    })
+
+    roomSubscription.on('memberExited', payload => {
+      console.log(payload);
+      
+      this.setState(state => {
+        return {
+          room: {
+            ...state.room,
+            users: state.room.users.filter(user => user != payload.username)
+          }
+        }
+      })
+      console.log(`${payload.username} saiu da sala`);
     })
 
     roomSubscription.on('close', () => {

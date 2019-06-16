@@ -52,7 +52,6 @@ export const Option = styled.li`
 export default function RoomDetails(props) {
   const room = props.room;
   const {themes, users} = room
-  console.log(themes);
   
   const listStyle = {
     display: 'flex',
@@ -85,7 +84,7 @@ export default function RoomDetails(props) {
         { playersList }
       </Info>
       <Info>
-        <Subtitle>Temas</Subtitle>}
+        <Subtitle>Temas</Subtitle>
         { themeList }
       </Info>
       <Options>
