@@ -3,8 +3,6 @@ import api from '../../services/api';
 import Select from 'react-select';
 import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
-
-
 import 'react-s-alert/dist/s-alert-css-effects/scale.css';
 
 const div_style = {
@@ -70,7 +68,7 @@ export default class CreateARoom extends React.Component {
 		}
   }
 
-  	componentWillMount = async() => {
+	componentWillMount = async() => {
 		const {data} = await api.get('/room/themes');
 		this.setState({options: data})
 	}

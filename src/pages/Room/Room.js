@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import { getToken } from '../../services/auth';
 import jwt_decode from 'jwt-decode';
+import Menu from '../../components/Menu';
 import RoomAuth from './RoomAuth';
 import RoomDetails from './RoomDetails';
 import Loading from '../../components/Loading';
 import Ws from '@adonisjs/websocket-client';
 import api from '../../services/api';
+import { logout } from '../../services/auth';
 
 let ws
 
@@ -36,10 +38,11 @@ export default class Room extends React.Component{
       isLoading: true,
     }
 
-    this.handleAuth = this.handleAuth.bind(this);
-    this.handleEnterRoom = this.handleEnterRoom.bind(this);
-    this.handleQuitRoom = this.handleQuitRoom.bind(this);
-    this.handleStartGame = this.handleStartGame.bind(this);
+    this.handleAuth = this.handleAuth.bind(this)
+    this.handleEnterRoom = this.handleEnterRoom.bind(this)
+    this.handleQuitRoom = this.handleQuitRoom.bind(this)
+    this.handleStartGame = this.handleStartGame.bind(this)
+    this.handleLogout = this.handleLogout.bind(this)
   }
   
   async componentDidMount() {
@@ -88,6 +91,11 @@ export default class Room extends React.Component{
     } else {
       alert('Algum erro ocorreu e não foi possível sair da sala. Tente novamente.')
     }
+  }
+
+  handleLogout(){
+    this.handleQuitRoom()
+    logout()
   }
 
   handleStartGame(){
@@ -140,8 +148,6 @@ export default class Room extends React.Component{
     })
 
     roomSubscription.on('memberExited', payload => {
-      console.log(payload);
-      
       this.setState(state => {
         return {
           room: {
@@ -178,9 +184,10 @@ export default class Room extends React.Component{
     }
 
     return (
-      <Container>
-        { content }
-      </Container>
+      <Fragment>
+        <Menu style="height: 20vh" onLogout={ this.handleLogout }/>
+        <Container>{content}</Container>
+      </Fragment>
     )
   }
 }
