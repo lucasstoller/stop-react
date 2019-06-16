@@ -3,33 +3,13 @@ import api from '../../services/api';
 import Select from 'react-select';
 import Alert from 'react-s-alert';
 import 'react-s-alert/dist/s-alert-default.css';
-import 'react-s-alert/dist/s-alert-css-effects/slide.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 
-import 'react-s-alert/dist/s-alert-css-effects/slide.css';
 import 'react-s-alert/dist/s-alert-css-effects/scale.css';
-import 'react-s-alert/dist/s-alert-css-effects/bouncyflip.css';
-import 'react-s-alert/dist/s-alert-css-effects/flip.css';
-import 'react-s-alert/dist/s-alert-css-effects/genie.css';
-import 'react-s-alert/dist/s-alert-css-effects/jelly.css';
-import 'react-s-alert/dist/s-alert-css-effects/stackslide.css';
-
-
-import { deepEqual } from 'assert';
 
 const div_style = {
 	width: '320px', height: '220',	
 	background: '#5D92EC',
-	color: 'white', top: '50%', left:'50%', position: 'absolute',
-	transform: 'translate(-50%, -50%)',
-	padding: '70px 30px',
-	borderRadius: '10px'
-}
-
-const modal_error = {
-	width: '320px', height: '220',	
-	background: '#DC143C',
 	color: 'white', top: '50%', left:'50%', position: 'absolute',
 	transform: 'translate(-50%, -50%)',
 	padding: '70px 30px',
@@ -75,15 +55,6 @@ const button_style = {
 	boxShadow: '0 0.5rem 1.1rem 0 rgba(22,75,195,0.50)'
 }	
 
-const modal_style = {
-	position: 'top-left',
-	effect: 'scale',
-	beef: false,
-	timeout: 2500,
-	offset: -1
-}
-
-
 const selectBox_style = {
 	option: (provided, state) => ({
 		...provided,
@@ -126,8 +97,8 @@ export default class CreateARoom extends React.Component {
 		
 		if (name == "" || (password == "" && type == "private") || values.length < 4 ){
 			e.preventDefault();
-			Alert.warning(this.state.warningMessage, {position: 'top-left', effect: 'scale', beef: false, timeout: 2500, offset: -1});
-			return;
+			Alert.error(this.state.warningMessage, {position: 'top-left', effect: 'scale', beef: false, timeout: 2500, offset: -1});
+			return;		
 		}
 		
 		const themes_2_send = values.map(x => {
@@ -141,15 +112,16 @@ export default class CreateARoom extends React.Component {
 			type,
 			themes: themes_2_send
 		}
-
+	
 		const response = await api.post('/rooms', data);
 		
-		if(response.status == 200){			
-			this.resetValues();
-			Alert.success(this.state.successMessage, {position: 'top-left', effect: 'scale', beef: false, timeout: 2500, offset: -1});
+		if(response.status == 200){
+			this.resetValues();			
+			Alert.success(this.state.successMessage, {position: 'top-left', effect: 'scale', beef: false, timeout: 2500, offset: -1});			
 		}
 		else
 			Alert.error(this.state.errorMessage, {position: 'top-left', effect: 'scale', beef: false, timeout: 2500, offset: -1});
+			
 	}
 
 	render() {
@@ -162,9 +134,7 @@ export default class CreateARoom extends React.Component {
 
         return (
 			<div>
-				<div>				
-					<Alert stack={{limit: 1}} />
-				</div>
+				<Alert stack={{limit: 1}} />
 
 				<div style = {div_style}>
 					<form>
@@ -213,7 +183,7 @@ export default class CreateARoom extends React.Component {
 						
 					</form>			
 				</div>
-			</div>
+			 </div>
 		);
 	};
 }
