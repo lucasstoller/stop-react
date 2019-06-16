@@ -45,16 +45,10 @@ export default class SearchARoom extends React.Component {
 	}
 
 	render(){
-		let roomDetails
-
-		if(this.state.room){
-			roomDetails = <RoomDetails room={this.state.room}/>
-		}
-
 		return (
 			<div style={divStyle}>
 				<RoomList rooms={this.state.rooms} onRoomClick={this.handleRoomClick} />
-				<RoomDetails room={this.state.room}/>
+				<RoomDetails room={this.state.room} onEnterRoom={this.props.onEnterRoom}/>
 			</div>
 		)
 	}

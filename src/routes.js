@@ -6,7 +6,7 @@ import { isAuthenticated } from "./services/auth";
 import Home from './pages/Home/Home';
 import SignUp from './pages/SignUp/SignUp';
 import SignIn from './pages/SignIn/SignIn';
-// import Board from './pages/Board/Board';
+import Board from './pages/Board/Board';
 import Room from './pages/Room/Room';
 import FourOhFour from './pages/404';
 
@@ -28,9 +28,11 @@ const Routes = () => (
     <Switch>
       <Route path="/signin" component={ SignIn } />
       <Route path="/signup" component={ SignUp } />
+      
+      <PrivateRoute Route exact path="/" component={ Home } />
       <PrivateRoute Route exact path="/home" component={ Home } />
-      <PrivateRoute path="/room/:id" component={ Room } />
-      {/* <PrivateRoute path="/board" component={ Board } /> */}
+      <PrivateRoute path="/room/:id/board" component={ Board } />
+      
       <Route path="*" component={ FourOhFour } />
     </Switch>
   </BrowserRouter>

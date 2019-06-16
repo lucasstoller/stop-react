@@ -53,7 +53,7 @@ export default function RoomList(props) {
         <hr/>
         <RoomDescription>
           { type }
-          <p><FontAwesomeIcon icon={faUser} /> 4 jogadores</p>
+          <p><FontAwesomeIcon icon={faUser} /> {room.users.length} jogadores</p>
         </RoomDescription>
       </Room>
     )

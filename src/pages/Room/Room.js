@@ -1,14 +1,11 @@
 import React, {Fragment} from 'react';
 import styled from 'styled-components';
-import Menu from '../../components/Menu';
 import RoomAuth from './RoomAuth';
 import RoomDetails from './RoomDetails';
 import Ws from '@adonisjs/websocket-client';
 import api from '../../services/api';
-import { getToken } from '../../services/auth';
-import jwt_decode from 'jwt-decode';
 
-let ws = null
+let ws
 
 const Container = styled.div`
   width: 75vw;
@@ -25,46 +22,63 @@ const Container = styled.div`
 `;
 
 export default class Room extends React.Component{
-  constructor({ props, match }){
-    super(props);
+  constructor({ props }){
+    super(props)
 
     this.state = {
-      roomId: match.params.id,
-      room: {},
-      hasAccess: '',
+      room: null,
+      hasAccess: null
     }
 
-    this.handleHadAccess = this.handleHadAccess.bind(this);
+    this.handleAuth = this.handleAuth.bind(this);
+    this.handleEnterRoom = this.handleEnterRoom.bind(this);
+    this.handleQuitRoom = this.handleQuitRoom.bind(this);
     this.handleStartGame = this.handleStartGame.bind(this);
   }
   
   async componentWillMount(){
-    const token = getToken()
-    const { uid } = jwt_decode(token);
-    let response = await api.get(`/users/${uid}`);
-    const user = response.data
-
-    response = await api.get(`/rooms/${this.state.roomId}`)
-    const room = response.data
-
-    this.setState({
-      room, 
-      hasAccess: room.type == 'public' ? true : false,
-      user
-    });
+    const { room } = this.props
+    const hasAccess = room.type == 'public' ? true : false
+    
+    await this.setState({ room, hasAccess })
+    
+    if(this.state.hasAccess) this.handleEnterRoom()
+  }
+  
+  handleAuth() {
+    this.setState({ hasAccess: true })
+    this.handleEnterRoom()
   }
 
-  handleHadAccess(){
-    this.setState({hasAccess: true});
+  async handleEnterRoom(){
+    const { user: {id: user_id} } = this.props    
+    const { room: {id: room_id} } = this.state
+    try {
+      const response = await api.post(`/users/${user_id}/rooms/${room_id}`)
+      this.startRoomWS()
+    } catch (error) {
+      console.error(error)
+      alert('Infelizmente não foi possível entrar na sala. Tente novamente em instantes.')
+      window.location.pathname = '/home' 
+    }
   }
- 
+
   async handleQuitRoom(){
-    await ws.close()
-    window.location.pathname = '/home'
+    const { user: {id: user_id} } = this.props    
+    const { room: {id: room_id} } = this.state
+
+    const response = await api.delete(`/users/${user_id}/rooms/${room_id}`)
+    console.log(response);
+    
+    if (response.status == 200) {
+      ws.close()
+    } else {
+      alert('Algum erro ocorreu e não foi possível sair da sala. Tente novamente.')
+    }
   }
 
   handleStartGame(){
-    const roomChannel = ws.getSubscription(`room:${this.state.roomId}`)
+    const roomChannel = ws.getSubscription(`room:${this.state.room.id}`)
     if(roomChannel) roomChannel.emit('startMatch', 'bla')
     else console.error('Canal não existe'); 
   }
@@ -73,7 +87,7 @@ export default class Room extends React.Component{
     ws = Ws('ws://localhost:3333').connect()
   
     ws.on('open', () => {
-      console.log('Conexão aberta!');
+      console.log('Conexão com o servidor aberta!');
       this.subscribeToChannel()
     })
   
@@ -83,43 +97,49 @@ export default class Room extends React.Component{
   }
 
   subscribeToChannel(){
-    const room = ws.getSubscription(`room:${this.state.roomId}`) || ws.subscribe(`room:${this.state.roomId}`)
-    room.emit('hello', this.state.user.username)
+    const { room } = this.state
+    const { user } = this.props
+    const payload = {
+      username: user.username,
+      room: room.id
+    }
+    const roomSubscription = ws.getSubscription(`room:${room.id}`) || ws.subscribe(`room:${room.id}`)
+    roomSubscription.emit('hello', payload)
     
-    room.on('error', () => {
-      console.error('Não foi possível se inscrever no canal.');
+    roomSubscription.on('error', () => {
+      alert('A sala está com algum erro, tente novamente');
     })
   
-    room.on('matchStarted', () => {
+    roomSubscription.on('matchStarted', () => {
       alert('Vamos começar a partida!');
-      window.location = `/partida.html?partidaId=${this.state.roomId}&usuario=${this.state.user.username}`
+      window.location = `/partida.html?partidaId=${room.id}&usuario=${user.username}`
     })
 
-    room.on('newMemberEntered', username => {
+    roomSubscription.on('newMemberEntered', username => {
       console.log(username, ' entrou na sala');
+    })
+
+    roomSubscription.on('close', () => {
+      window.location.pathname = '/home'
     })
   }
 
   render(){
-    let content = null;
-
+    let content
+    
     if(this.state.hasAccess) {
-      content = <RoomDetails 
+      content = <RoomDetails
                   room={this.state.room} 
                   onClickQuitRoom={this.handleQuitRoom}
                   onClickStartGame={this.handleStartGame} />
-      this.startRoomWS()
-    } else{
+    } else {
       content = <RoomAuth 
                   password={this.state.room.password} 
-                  onAuthenticated={this.handleHadAccess}/>
+                  onAuthenticated={this.handleAuth}/>
     }
 
     return (
-      <Fragment>
-        <Menu style="height: 20vh"></Menu>
-        <Container>{content}</Container>
-      </Fragment>
+      <Container>{content}</Container>
     )
   }
 }

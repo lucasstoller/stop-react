@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import Options from './Options';
 
-import bgImage from '../assets/home-bg.png';
-import CreateARoom from '../pages/Home/CreateARoom';
-import SearchARoom from '../pages/Home/SearchARoom';
+import bgImage from '../../assets/home-bg.png';
+import CreateARoom from './CreateARoom';
+import SearchARoom from './SearchARoom';
 
 export const Container = styled.div`
   height: 92vh;
@@ -45,7 +45,7 @@ class Showcase extends React.Component {
       case 'SearchARoom':
         content = (
           <Content>
-            <SearchARoom></SearchARoom>
+            <SearchARoom onEnterRoom={this.props.onEnterRoom}></SearchARoom>
           </Content>
         ) 
         break;

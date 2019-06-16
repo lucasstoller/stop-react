@@ -41,24 +41,21 @@ const Button = styled.button`
 `;
 
 class RoomDetails extends React.Component {
-  handleEnterRoom(id){
-    window.location.pathname = '/room/' + id
-  }
-
   render(){
     const room = this.props.room;
     let content
     
     if(room){
-      const { themes, type } = room;
+      const { themes, users: players, type } = room;
       content = (
         <Container>
           <RoomTitle>{room.name}</RoomTitle>
           <RoomDescription>
-            <Item>Temas: {['Esportes', 'Carros', 'Frutas', 'Pokemon'].join(', ')}</Item>
-            <Item>Privada / Pública: {type == 'private'?'Privada':'Pública'}</Item>
+            <Item>Temas: {themes.join(', ')}</Item>
+            <Item>Tipo: {type == 'private'?'Privada':'Pública'}</Item>
+            <Item>Jogadores na sala: {players.join(', ')}</Item>
           </RoomDescription>
-          <Button onClick={() => this.handleEnterRoom(room.id)}>Entrar</Button>
+          <Button onClick={() => this.props.onEnterRoom(room)}>Entrar</Button>
         </Container>
       )
     } else content = <Container />

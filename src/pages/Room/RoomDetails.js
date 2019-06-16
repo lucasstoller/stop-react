@@ -51,24 +51,29 @@ export const Option = styled.li`
 
 export default function RoomDetails(props) {
   const room = props.room;
+  const {themes, users} = room
+  console.log(themes);
   
   const listStyle = {
-    'display': 'flex',
-    'flex-direction': 'row',
-    'justify-content': 'space-around',
-    'flex-wrap': 'wrap',
-    'padding': '1vw'
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    flexWrap: 'wrap',
+    padding: '1vw'
   }
 
   const themeList = (
     <ul style={listStyle}>
-      {['Esportes', 'Carros', 'Frutas', 'Pokemon'].map(theme => (
-        <li>{ theme }</li>
+      {themes.map((theme, index) => (
+        <li key={`room-${room.id}-player-${index}`}>{ theme }</li>
       ))}   
     </ul>
   )
   const playersList = (
     <ul style={listStyle}>
+      {users.map((player, index) => (
+        <li key={`room-${room.id}-theme-${index}`}>{ player }</li>
+      ))}
     </ul>
   )
 
@@ -80,7 +85,7 @@ export default function RoomDetails(props) {
         { playersList }
       </Info>
       <Info>
-        <Subtitle>Temas</Subtitle>
+        <Subtitle>Temas</Subtitle>}
         { themeList }
       </Info>
       <Options>
