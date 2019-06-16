@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStore, faCoins, faUser, faSignOutAlt} from '@fortawesome/free-solid-svg-icons'
-import { logout } from '../services/auth'
 
 export const Nav = styled.ul`
   display: flex;
@@ -24,21 +23,15 @@ export const NavItem = styled.li`
   }
 `;
 
-class Menu extends React.Component{
-  handleLogout(){
-    logout()
-    window.location = '/home'
-  }
-  render(){
-    return (
-      <Nav>
-        <NavItem><FontAwesomeIcon icon={faStore} /> Store</NavItem>
-        <NavItem><FontAwesomeIcon icon={faCoins} /> Credits</NavItem>
-        <NavItem><FontAwesomeIcon icon={faUser} /> User</NavItem>
-        <NavItem onClick={() => this.handleLogout()}><FontAwesomeIcon icon={faSignOutAlt} /> Logout</NavItem>
-      </Nav>
-    );
-  }
+function Menu(props){
+  return (
+    <Nav>
+      <NavItem><FontAwesomeIcon icon={faStore} /> Store</NavItem>
+      <NavItem><FontAwesomeIcon icon={faCoins} /> Credits</NavItem>
+      <NavItem><FontAwesomeIcon icon={faUser} /> User</NavItem>
+      <NavItem onClick={() => props.onLogout()}><FontAwesomeIcon icon={faSignOutAlt} /> Logout</NavItem>
+    </Nav>
+  );
 }
 
 export default Menu;

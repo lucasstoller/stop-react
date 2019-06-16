@@ -3,8 +3,8 @@ import { getToken } from '../../services/auth';
 import jwt_decode from 'jwt-decode';
 import api from '../../services/api';
 import Menu from '../../components/Menu';
+import { logout } from '../../services/auth';
 import Showcase from './Showcase';
-import Room from '../Room/Room';
 
 class Home extends React.Component{
   constructor({ props }){
@@ -15,36 +15,38 @@ class Home extends React.Component{
       room: null,
     }
 
-    this.handleEnterRoom = this.handleEnterRoom.bind(this);
+    this.handleLogout = this.handleLogout.bind(this)
+    this.handleEnterRoom = this.handleEnterRoom.bind(this)
   }
 
   async componentWillMount(){
     const token = getToken()
     const { uid } = jwt_decode(token);
-    const response = await api.get(`/users/${uid}`);
+    const response = await api.get(`/users/${uid}`)
     this.setState({ user: response.data })
+  }
+  
+  handleLogout(){
+    logout()
+    this.props.history.push("/home")
   }
 
   handleEnterRoom(room){
-    this.setState({ room })
+    this.props.history.push(`/room/${room.id}`)
   }
 
   render() {
-    const { room, user } = this.state
-    const content = room ? 
-      <Room 
-        style="height: 80vh"
-        room={ room }
-        user={ user } /> :
-      <Showcase 
-        style="height: 80vh" 
-        user={ user }
-        onEnterRoom={ this.handleEnterRoom } />
-    
+    const { user } = this.state
+
     return (
       <Fragment>
-        <Menu style="height: 20vh" />
-        { content }
+        <Menu 
+          style="height: 20vh"
+          onLogout={ this.handleLogout }/>
+        <Showcase 
+          style="height: 80vh" 
+          user={ user }
+          onEnterRoom={ this.handleEnterRoom } />
       </Fragment>
     )
   }

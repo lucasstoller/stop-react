@@ -2,6 +2,7 @@ import React from 'react';
 
 import RoomList from './RoomList';
 import RoomDetails from './RoomDetails';
+import Loading from '../../components/Loading'
 import api from '../../services/api';
 
 const divStyle = {
@@ -24,19 +25,19 @@ export default class SearchARoom extends React.Component {
     this.state = {
 			rooms: [],
 			room: null,
-			loadingRooms: false
+			isLoading: true
 		}
 
 		this.handleRoomClick = this.handleRoomClick.bind(this);
 	}
 
-	async componentWillMount(){
+	async componentDidMount(){
 		const response = await api.get('/rooms')
 		
 		const rooms = response.data
 		const room = rooms[0] ? rooms[0] : null 
 
-		this.setState({ rooms, room });
+		this.setState({ rooms, room, isLoading: false });
 	}
 
 	handleRoomClick(roomId){
@@ -45,11 +46,22 @@ export default class SearchARoom extends React.Component {
 	}
 
 	render(){
-		return (
-			<div style={divStyle}>
-				<RoomList rooms={this.state.rooms} onRoomClick={this.handleRoomClick} />
-				<RoomDetails room={this.state.room} onEnterRoom={this.props.onEnterRoom}/>
-			</div>
-		)
+		let content 
+
+		if (this.state.isLoading) {
+			content = (
+				<div style={divStyle}>
+					<Loading message='Buscando salas...' background=''/>
+				</div>
+			)
+		} else {
+			content = (
+				<div style={divStyle}>
+					<RoomList rooms={this.state.rooms} onRoomClick={this.handleRoomClick} />
+					<RoomDetails room={this.state.room} onEnterRoom={this.props.onEnterRoom}/>
+				</div>
+			)
+		}
+		return content
 	}
 }
