@@ -34,17 +34,6 @@ const input = {
 	borderWidth: '1px'
 }
 
-const close = {
-  color: 'white',
-  font: '14px/100% arial, sans-serif',
-  position: 'absolute',
-  right: '5px',
-  textDecoration: 'none',
-  textShadow: '0 1px 0 #fff',
-  top: '5px',
-  content: '✖'
-}
-
 const button_style = {
 	display: 'block',
 	width: '55px',
@@ -138,7 +127,6 @@ export default class CreateARoom extends React.Component {
 
 				<div style = {div_style}>
 					<form>
-					<a href = "#" style = {close}>X</a>
 					<h1 style = {h1_style}>Criar Sala</h1>
 						<input
 						style = {input}					
