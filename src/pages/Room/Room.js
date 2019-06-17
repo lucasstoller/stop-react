@@ -9,6 +9,9 @@ import Loading from '../../components/Loading';
 import Ws from '@adonisjs/websocket-client';
 import api from '../../services/api';
 import { logout } from '../../services/auth';
+import Alert from 'react-s-alert';
+import 'react-s-alert/dist/s-alert-default.css';
+import 'react-s-alert/dist/s-alert-css-effects/scale.css';
 
 let ws
 
@@ -68,20 +71,21 @@ export default class Room extends React.Component{
   }
 
   async handleEnterRoom(){
+    const msg = 'Infelizmente não foi possível entrar na sala. Tente novamente em instantes.'
     const { user: {id: user_id}, room: {id: room_id} } = this.state   
 
     try {
       await api.post(`/users/${user_id}/rooms/${room_id}`)
       this.startRoomWS()
     } catch (error) {
-      console.error(error)
-      
-      alert('Infelizmente não foi possível entrar na sala. Tente novamente em instantes.')
+      console.error(error)      
+      Alert.error(msg, {position: 'top', effect: 'scale', beef: false, timeout: 3000, offset: -1});      
       this.props.history.pop()
     }
   }
 
   async handleQuitRoom(){
+    const msg = 'Algum erro ocorreu e não foi possível sair da sala. Tente novamente.';
     const { user: {id: user_id}, room: {id: room_id} } = this.state    
 
     const response = await api.delete(`/users/${user_id}/rooms/${room_id}`)
@@ -89,9 +93,9 @@ export default class Room extends React.Component{
     if (response.status == 200) {
       ws.close()
     } else {
-      alert('Algum erro ocorreu e não foi possível sair da sala. Tente novamente.')
+      Alert.error(msg, {position: 'top', effect: 'scale', beef: false, timeout: 3000, offset: -1});      
     }
-  }
+   }
 
   handleLogout(){
     this.handleQuitRoom()
@@ -117,7 +121,7 @@ export default class Room extends React.Component{
     })
   }
 
-  subscribeToChannel(){
+  subscribeToChannel(){    
     const { room, user } = this.state
     const payload = {
       username: user.username,
@@ -127,11 +131,11 @@ export default class Room extends React.Component{
     roomSubscription.emit('hello', payload)
     
     roomSubscription.on('error', () => {
-      alert('A sala está com algum erro, tente novamente');
+      Alert.error('A sala está com algum erro, tente novamente', {position: 'top', effect: 'scale', beef: false, timeout: 3000, offset: -1});      
     })
   
     roomSubscription.on('matchStarted', () => {
-      alert('Vamos começar a partida!');
+      Alert.success('Tudo certo, vamos começar a partida!', {position: 'top-left', effect: 'scale', beef: false, timeout: 1500, offset: -1});      
       this.props.history.push(`/room/${this.state.room.id}/board`)
     })
 
@@ -164,6 +168,13 @@ export default class Room extends React.Component{
     })
   }
 
+  handleClick = () => {
+    const effects_array = ['bouncyflip','slide','jelly'];
+    const htmlMsg = '<h2 style="font-size: 30px; font-family: Brush Script MT; padding-left:45%">Coming Soon!</h2>';
+    const randomNum = Math.floor(Math.random() * 3);
+    Alert.info(htmlMsg, {position: 'top', effect: effects_array[randomNum], beef: false, html: true, timeout: 1250, offset: -1});
+  }
+
   render(){
     const { room, hasAccess, isLoading } = this.state
     
@@ -184,8 +195,10 @@ export default class Room extends React.Component{
     }
 
     return (
-      <Fragment>
-        <Menu style="height: 20vh" onLogout={ this.handleLogout }/>
+      <Fragment>        
+        <Alert/>
+        <Menu style="height: 20vh" onLogout={ this.handleLogout }
+        Click={this.handleClick}/>
         <Container>{content}</Container>
       </Fragment>
     )

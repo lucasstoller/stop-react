@@ -1,5 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import Alert from 'react-s-alert';
+import 'react-s-alert/dist/s-alert-default.css';
+import 'react-s-alert/dist/s-alert-css-effects/scale.css';
 
 const Container = styled.div`
   width: 75vw;
@@ -24,11 +27,11 @@ export default class RoomAuth extends React.Component{
 
   auth(){
     const {password} = this.state; 
-    if (password == '') return alert('A senha não pode estar em branco!');
+    if (password == '') return Alert.error('A senha não pode estar em branco!',{position: 'top-left', effect: 'scale', beef: false, timeout: 1500, offset: -1}); 
     
     if (password == this.props.password) return this.props.onAuthenticated();
 
-    alert('Senha incorreta! Tente novamente.');
+    Alert.error('Senha incorreta! Tente novamente!', {position: 'top-left', effect: 'scale', beef: false, timeout: 1500, offset: -1});    
   }
 
   render(){ 

@@ -29,7 +29,7 @@ export const NavItem = styled.li`
 function Options(props){
   return (
     <Nav>
-      <NavItem onClick={() => props.onChangeOption('')}>
+      <NavItem onClick={() => props.onChangeOption('ComingSoon')}>
         <FontAwesomeIcon icon={faHandshake} /> MATCHMAKING
       </NavItem>
       
@@ -41,7 +41,7 @@ function Options(props){
         <FontAwesomeIcon icon={faSearch} /> PROCURAR SALA
       </NavItem>
       
-      <NavItem onClick={() => props.onChangeOption('')}>
+      <NavItem onClick={() => props.onChangeOption('ComingSoon')}>
         <FontAwesomeIcon icon={faTrophy} /> RANKING
       </NavItem>
     </Nav>

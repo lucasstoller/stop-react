@@ -1,6 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import stopBg from '../../assets/stop-bg.png';
+import Alert from 'react-s-alert';
+import 'react-s-alert/dist/s-alert-default.css';
+import 'react-s-alert/dist/s-alert-css-effects/scale.css';
 
 const Container = styled.div`
   width: 50vw;
@@ -37,5 +40,6 @@ export default function Options(){
 }
 
 function onStop(){
-  alert('Lucas apertou stop!');
+
+  Alert.info('Alguém apertou stop!', {position: 'top-left', effect: 'scale', beef: false, timeout: 1500, offset: -1});
 }
