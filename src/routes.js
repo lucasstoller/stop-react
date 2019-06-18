@@ -28,8 +28,9 @@ const Routes = () => (
   <Router>
       <Switch>
         <PrivateRoute exact path="/home" component={ Home } />
+        <PrivateRoute exact path="/" component={ Home } />
         <PrivateRoute exact path="/room/:id" component={ Room } />      
-        <PrivateRoute path="/rooms/:id/board" component={ Board } />      
+        <PrivateRoute path="/room/:id/board" component={ Board } />      
         <Route path="/signin" component={ SignIn } />
         <Route path="/signup" component={ SignUp } />
         <Route path="*" component={ FourOhFour } />
