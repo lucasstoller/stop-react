@@ -99,8 +99,9 @@ export default class Room extends React.Component{
   }
 
   handleStartGame(){
-    const roomChannel = ws.getSubscription(`room:${this.state.room.id}`)
-    if(roomChannel) roomChannel.emit('startMatch', 'bla')
+    const { id: roomID } = this.state.room
+    const roomChannel = ws.getSubscription(`room:${roomID}`)
+    if(roomChannel) roomChannel.emit('startMatch', { roomID })
     else console.error('Canal não existe'); 
   }
 
