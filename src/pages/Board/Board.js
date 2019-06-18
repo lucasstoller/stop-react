@@ -12,7 +12,7 @@ import jwt_decode from 'jwt-decode';
 import api from '../../services/api';
 import Ws from '@adonisjs/websocket-client';
 
-let ws
+let ws, matchSubscription
 
 const Game = styled.div`
   width: 100vw;
@@ -59,6 +59,7 @@ export default class Board extends React.Component {
     }
 
     this.handleOnChangeWord = this.handleOnChangeWord.bind(this)
+    this.handleStopPress = this.handleStopPress.bind(this)
   }
 
   async componentDidMount(){
@@ -88,7 +89,7 @@ export default class Board extends React.Component {
   subscribeToChannel(){
     const { roomID } = this.state
 
-    const matchSubscription = ws.subscribe(`match:${roomID}`)
+    matchSubscription = ws.subscribe(`match:${roomID}`)
 
     matchSubscription.on('error', () => {
       alert('Não foi possível se increver nesse canal')
@@ -107,7 +108,21 @@ export default class Board extends React.Component {
   }
 
   handleStopPress(){
-    alert('Voce apertou stop')
+    const { themes } = this.state.match
+    let missingWords = false
+  
+    themes.forEach(theme => {
+      if(theme.word === ''){
+        alert(`Preencha o campo '${theme.name}'`)
+        missingWords = true
+      }
+    });
+
+    if(!missingWords) {
+      matchSubscription.emit('stop')
+      const loading = { status: true, message: 'Você apertou stop. Aguarde' }
+      this.setState({ loading })
+    }
   }
 
   handleOnChangeWord(i, word){
