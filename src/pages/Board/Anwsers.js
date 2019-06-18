@@ -43,7 +43,7 @@ export default function Answers(props){
   })
   
   return (
-    <Container id="peloamor" style={{marginLeft: '8em', marginTop: '3em'}}>
+    <Container style={{marginLeft: '8em', marginTop: '3em'}}>
       { answers }
     </Container>    
   )

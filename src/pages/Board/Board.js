@@ -173,7 +173,7 @@ export default class Board extends React.Component {
       )
     }
     return (
-      <Game id="mumua">{content}
+      <Game>{content}
 
         <Stop style={{position: 'absolute', top: '19em', right: '18em'}} onClick={this.handleStopPress}>Gritar Stop!</Stop>
       

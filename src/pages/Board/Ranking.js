@@ -35,7 +35,7 @@ export default function Ranking(props){
   })
 
   return (
-    <Container id="Ranking" style={{}}>
+    <Container>
       <Title>Ranking</Title>
       { players }
     </Container>   
