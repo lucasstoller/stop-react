@@ -116,9 +116,57 @@ export default class Board extends React.Component {
       const loading = { status: false, message: null }
       this.setState({ loading })
     })
+
+    matchSubscription.on('stop', payload => {
+      let message
+      if(payload.username === this.state.user.username){
+        message = 'Calculando os pontos...'
+      } else {
+        message = `${payload.username} apertou stop! Aguarde enquanto calculamos o pontos...`
+      }
+      const loading = { status: true, message }
+      this.setState({ loading })
+
+      payload = {
+        match: this.state.roomID,
+        round: this.state.match.round,
+        player: {
+          id: this.state.user.id,
+          username: this.state.user.username
+        },
+        points: this.state.match.players.find(player => {
+          return player.username === this.state.user.username
+        }),
+        anwsers: this.state.match.themes.map(theme => {
+          return { theme: theme.id, word: theme.word }   
+        })
+      }
+
+      matchSubscription.emit('calcRoundPoints', payload)
+    })
+
+    matchSubscription.on('newRound', match => {
+      const loading = { status: false, message: null }
+      this.setState({ loading, match })
+    })
+
+    matchSubscription.on('endGame', match => {
+      const players = match.players.sort(function (a, b) {
+        if (a.points > b.points) {
+          return 1;
+        }
+        if (a.points < b.points) {
+          return -1;
+        }
+        return 0;
+      })
+      const winner = players[0]
+      alert(`A partida acabou!! O ganhador foi ${winner.username} com ${winner.points}`)
+      ws.close()
+    })
   }
 
-  handleStopPress(){
+  handleStopPress() {
     const { themes } = this.state.match
     let missingWords = false
   
@@ -131,7 +179,7 @@ export default class Board extends React.Component {
     });
 
     if(!missingWords) {
-      matchSubscription.emit('stop')
+      matchSubscription.emit('stop', { username: this.state.user.username })
       const loading = { status: true, message: 'Você apertou stop. Aguarde' }
       this.setState({ loading })
     }
