@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import roundBg from '../../assets/round-bg.png';
 import letterBg from '../../assets/letter-bg.png';
 
+
+
 const Container = styled.div`
   height: 30vh;
   display: flex;
@@ -10,9 +12,10 @@ const Container = styled.div`
   justify-content: space-between;
 `;
 
-const Info = styled.div`
+const Rodada = styled.div`
+  font-family: cursive;
   width: 30vw;
-  height: 15vw;
+  height: 15vw;  
   background-position: center;  
   background-repeat: no-repeat;
   background-size: cover;
@@ -20,15 +23,32 @@ const Info = styled.div`
   font-size: 3vw;
   font-weight: bold;
   color: #000;
-  padding: 15px;
   margin-top: 10px;
+  
+  padding-right: 0px;
 `;
+
+const Letra = styled.div`
+  font-family: cursive;
+  width: 30vw;
+  height: 15vw;  
+  background-position: center;  
+  background-repeat: no-repeat;
+  background-size: cover;
+  text-align: center;
+  font-size: 3vw;
+  font-weight: bold;
+  color: #000;
+  margin-top: 10px;
+  margin-right: 7em;
+`;
+
 
 export default function GameStatus(props){
   return (
     <Container>
-      <Info style={{backgroundImage: `url(${roundBg})`}}>Rodada: {props.round} </Info>
-      <Info style={{backgroundImage: `url(${letterBg})`}}>Letra: {props.letter} </Info>
+      <Rodada style={{backgroundImage: `url(${roundBg})`}}>Rodada: {props.round} </Rodada>
+      <Letra style={{backgroundImage: `url(${letterBg})`}}>Letra: {props.letter} </Letra>
     </Container>
   )
 }

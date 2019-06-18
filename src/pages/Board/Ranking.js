@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const Container = styled.div`
   width: 30vw;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 245, 0.7);
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -13,8 +13,11 @@ const Container = styled.div`
 `;
 const Player = styled.div`
   width: 100%;
+  font-family: cursive;
+  font-size: 20px;
 `;
 const Title = styled.h1`
+
   font-weight: bold;
   text-align: center;
   padding: 10px;
@@ -32,7 +35,7 @@ export default function Ranking(props){
   })
 
   return (
-    <Container>
+    <Container id="Ranking" style={{}}>
       <Title>Ranking</Title>
       { players }
     </Container>   
