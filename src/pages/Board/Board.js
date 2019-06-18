@@ -1,4 +1,5 @@
 import bgImage from '../../assets/board-bg.png';
+import btnImage from '../../assets/stop-bg.png';
 
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
@@ -11,6 +12,10 @@ import { getToken } from '../../services/auth';
 import jwt_decode from 'jwt-decode';
 import api from '../../services/api';
 import Ws from '@adonisjs/websocket-client';
+
+import Alert from 'react-s-alert';
+import 'react-s-alert/dist/s-alert-default.css';
+import 'react-s-alert/dist/s-alert-css-effects/scale.css';
 
 let ws, matchSubscription
 
@@ -34,17 +39,23 @@ const Container = styled.div`
 `;
 
 const Stop = styled.button`
-  width: 80%;
-  height: 10%;
-  background-color: #054EE1;
+  width: 11%;
+  height: 18%;
+  background-color: #ff0000;
+  font-size: 30px;
   color: #fff;
+  font-family: Brush Script MT;
   font-weight: bold;
-  border-radius: 5px;
+  border-radius: 50%;
+  border: 1px solid #000000;
+  display: inline-block;
   cursor: pointer;
   &:hover {
-    background-color: #2C2E63;
+    width: 12%;
+    height: 19%;
+    transition-duration: 0.3s;
   }
-  margin-bottom: 20px;
+  
 `;
 
 export default class Board extends React.Component {
@@ -92,7 +103,7 @@ export default class Board extends React.Component {
     matchSubscription = ws.subscribe(`match:${roomID}`)
 
     matchSubscription.on('error', () => {
-      alert('Não foi possível se increver nesse canal')
+      Alert.error('Não foi possível se increver nesse canal', {position: 'top-left', effect: 'scale', beef: false, timeout: 2500, offset: -1});      
       ws.close()
     })
 
@@ -113,7 +124,8 @@ export default class Board extends React.Component {
   
     themes.forEach(theme => {
       if(theme.word === ''){
-        alert(`Preencha o campo '${theme.name}'`)
+        Alert.error(`Preencha o campo '${theme.name}'`, {position: 'top-left', effect: 'scale', beef: false, timeout: 2500, offset: -1});
+        // alert(`Preencha o campo '${theme.name}'`)
         missingWords = true
       }
     });
@@ -156,12 +168,18 @@ export default class Board extends React.Component {
             <Anwsers themes={match.themes} onChangeWord={this.handleOnChangeWord} />
             <Ranking users={match.players} />
           </Container>
-          <Stop onClick={this.handleStopPress}>STOP</Stop>
+          {/* <Stop onClick={this.handleStopPress}>STOP</Stop> */}
         </Fragment>
       )
     }
     return (
-      <Game>{content}</Game>
+      <Game>{content}
+
+        <Stop style={{position: 'absolute', top: '19em', right: '18em'}} onClick={this.handleStopPress}>Gritar Stop!</Stop>
+      
+        <Alert stack={{limit: 4}}/>        
+
+      </Game>
     )
   }
 }
