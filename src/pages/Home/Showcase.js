@@ -5,6 +5,7 @@ import Options from './Options';
 import bgImage from '../../assets/home-bg.png';
 import CreateARoom from './CreateARoom';
 import SearchARoom from './SearchARoom';
+import ComingSoon from './ComingSoon';
 
 export const Container = styled.div`
   height: 92vh;
@@ -49,6 +50,13 @@ class Showcase extends React.Component {
           </Content>
         ) 
         break;
+      case 'ComingSoon':
+          content = (
+            <Content>
+              <ComingSoon></ComingSoon>
+            </Content>
+          ) 
+          break;
       default:
         content = <Content />
     }

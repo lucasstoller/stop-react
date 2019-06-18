@@ -26,9 +26,9 @@ export const NavItem = styled.li`
 function Menu(props){
   return (
     <Nav>
-      <NavItem><FontAwesomeIcon icon={faStore} /> Store</NavItem>
-      <NavItem><FontAwesomeIcon icon={faCoins} /> Credits</NavItem>
-      <NavItem><FontAwesomeIcon icon={faUser} /> User</NavItem>
+      <NavItem onClick={() => props.Click()}><FontAwesomeIcon icon={faStore} /> Store</NavItem>
+      <NavItem onClick={() => props.Click()}><FontAwesomeIcon icon={faCoins} /> Credits</NavItem>
+      <NavItem onClick={() => props.Click()}><FontAwesomeIcon icon={faUser} /> User</NavItem>
       <NavItem onClick={() => props.onLogout()}><FontAwesomeIcon icon={faSignOutAlt} /> Logout</NavItem>
     </Nav>
   );
