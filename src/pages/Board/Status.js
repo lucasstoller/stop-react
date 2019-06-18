@@ -19,16 +19,16 @@ const Info = styled.div`
   text-align: center;
   font-size: 3vw;
   font-weight: bold;
-  color: #ff0000;
+  color: #000;
   padding: 15px;
   margin-top: 10px;
 `;
 
-export default function GameStatus(){
+export default function GameStatus(props){
   return (
     <Container>
-      <Info style={{backgroundImage: `url(${roundBg})`}}>Rodada: 1 </Info>
-      <Info style={{backgroundImage: `url(${letterBg})`}}>Letra: B </Info>
+      <Info style={{backgroundImage: `url(${roundBg})`}}>Rodada: {props.round} </Info>
+      <Info style={{backgroundImage: `url(${letterBg})`}}>Letra: {props.letter} </Info>
     </Container>
   )
 }

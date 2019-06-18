@@ -114,6 +114,7 @@ export default class Room extends React.Component{
   
     ws.on('error', () => {
       console.error('Erro na conexão usando WS.');
+      ws.close()
     })
   }
 
@@ -123,11 +124,14 @@ export default class Room extends React.Component{
       username: user.username,
       room: room.id
     }
+    
     const roomSubscription = ws.getSubscription(`room:${room.id}`) || ws.subscribe(`room:${room.id}`)
+    
     roomSubscription.emit('hello', payload)
     
     roomSubscription.on('error', () => {
       alert('A sala está com algum erro, tente novamente');
+      ws.close()
     })
   
     roomSubscription.on('matchStarted', () => {
@@ -166,7 +170,6 @@ export default class Room extends React.Component{
 
   render(){
     const { room, hasAccess, isLoading } = this.state
-    
     let content
 
     if (isLoading) {
